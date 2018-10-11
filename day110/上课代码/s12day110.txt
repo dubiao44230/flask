@@ -1,0 +1,98 @@
+Django Web框架
+优点：
+	1.大而全，里面的组件非常的多
+		ORM：models
+缺点：
+	资源浪费很严重
+
+
+大型应用
+
+
+Flask Web框架
+优点：
+	1.短小精悍：session
+	2.官方承认支持的三方组件：
+		1.2.3.4.5
+缺点：
+	稳定性相对其他web框架较差，差那么一丢丢
+	你还不会呢
+
+快速组件，小型应用
+默认端口 ： 5000
+
+
+
+共同点：
+	做web的
+	都是基于socket
+共同有的方法：
+	都得有路由
+
+
+
+作业：基于session实现用户登录 并 实现学生管理
+
+
+总结：
+1.Flask 初识：
+	短小精悍，三方支持的组件多
+	稳定性较差
+
+2.三行 ：启动flask服务
+from flask import Flask
+app = Flask(__name__)
+app.run()
+
+六行：Hello world
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")  # ret_inner = route(index)
+def index():
+    return "Hello World!"
+app.run()
+
+3.Response三剑客：
+	return “123” return Response、
+	
+	from flask import redirect
+	return redirect 
+	
+	from flask import render_template
+	return render_template
+
+4.request 与 Django 的不太一样，导入的方式使用
+from flask import request
+存储请求体内部的参数
+	request.args get url
+	request.from post fromdata
+	request.json application/json
+	request.data xiaowangba
+
+对象属性
+	request.path
+	request.url
+	
+
+5.Jinja2 与 Django 的template 极为相似
+语法更贴切Python
+{{  }} 引用变量及函数
+{%  %} 带有逻辑代码的
+Markup  |safe
+@app.template_global()
+@app.template_filter()
+
+6.Flask Session
+from flask import session
+app.secret_key = "加密字符串"
+
+session["key"] = value
+
+flask中的session 是存放在 浏览器cookies中的session 
+值：加密序列化的
+
+	
+	
+	
+	
+	

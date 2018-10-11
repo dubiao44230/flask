@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+{{ stu_dict }}
+<table border="1px">
+    <tr>
+        <td>id</td>
+        <td>name</td>
+        <td>age</td>
+        <td>gender</td>
+    </tr>
+    {% for stu_id,stu in stu_dict.items() %}
+        <tr>
+            <td>{{ stu_id }}</td>
+            <td>{{ stu.get("name") }}</td>
+            <td>{{ stu.age }}</td>
+            <td>{{ stu.gender }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form method="post">
+        {% for field in fm %}
+          <p>{{ field.label }}  {{ field }} {{ field.errors.0 }}</p>
+        {% endfor %}
+        <p><input type="submit" value="Logindawangba"></p>
+    </form>
+</body>
+</html>

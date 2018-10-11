@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.js"></script>-->
+    <!--<script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.js"></script>-->
+</head>
+<body>
+<h1>登录页面</h1>
+<form action="/login?username=xiaowangba" method="post">
+    <p>用户名:<input type="text" name="username"></p>
+    <p>密码:<input type="text" name="password"></p>
+    <p><input type="submit" value="查看小秘密"></p>
+    <p>{{ msg }}</p>
+    <p>{{ add_sum(12580912345,1244,42315,236,24,23,4,213456,23,6,1234,523,567,34136,132,6,25) | oushu }}</p>
+
+    {% macro create_tag(na,ty) %}
+        <input type="{{ ty }}" name="{{ na }}" value="{{ na }}">
+    {% endmacro %}
+
+    <h1>你往下看</h1>
+    {{ create_tag("pppssssss","submit") }}
+
+</form>
+
+</body>
+</html>

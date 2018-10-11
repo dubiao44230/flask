@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+{{ stu_list }}
+<table border="1px">
+    <tr>
+        <td>name</td>
+        <td>age</td>
+        <td>gender</td>
+    </tr>
+    {% for stu in stu_list %}
+        {% if stu.name != "Old" %}
+            {% if stu.age != 73 %}
+                <tr>
+                    <td>{{ stu.name }}</td>
+                    <td>{{ stu.get("age") }}</td>
+                    <td>{{ stu["gender"] }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -1,0 +1,178 @@
+2018年10月10日
+昨日内容回顾：
+	Flask 短小精悍
+		稳定性相对较差
+		
+	Django 大而全
+		造成一定的资源浪费
+
+Flask
+	1.路由
+		@app.route("/",methods=("GET","POST"))
+	
+	2.视图函数
+		@app.route("/",methods=("GET","POST"))
+		def index():
+			return "123"
+	
+	3.返回值：
+		1.Response  "yinwangba"
+		
+		2.from flask import render_template
+			render_template return render_template("index.html") # 默认情况下模板存放在 templates 
+			
+		3.from flask import redirect
+			return redirect("/login") 
+		
+	4.request(全局变量,独有机制--Flask请求上下文管理)
+		存储数据：
+			request.args.get("name") url中取值
+			request.form.get("name") formdata取值
+			request.json # content-Type: app/json
+			request.data # content-Type: xiaowanba
+			request.values # 禁用
+		
+		属性数据：
+			request.method 
+			request.url
+			request.path  "/login"
+	
+	5.Jinja2
+		{{ 非逻辑的 引用变量 执行函数 被夹杂在for if }} 
+		{% 逻辑代码 %}
+		macro 宏指令
+	
+	6.Session
+		app.secret_key = "加密字符串" 
+		session["user"] = "username"
+		
+		加密session之后存放在cookies,
+		请求到来带上cookie 将session反序列化后拿到数值
+		
+		
+		
+
+今日内容：
+	1.装饰器基于session访问控制
+		endpoint可以解决视图函数重名的情况
+			
+	2.flask中的路由
+		1.@app.route("/<age>")动态路由参数 def index(age)
+			redirect_to="/login"
+			defaults={"age":999}
+			endpoint="bofunc"
+			methods=("GET", "POST")
+			strict_slashes=False 
+			
+			#methods=("GET", "POST")
+			#endpoint="bofunc"
+			#("/<age>")
+			
+		2.app.add_url_rule("/",viewfunc=viewfunc)
+			同上
+		
+	3.flask中的配置
+		1.Flask实例的配置 app配置
+			app.config["DEBUG"] = True
+			app.config.from_object(obj)
+			class obj():
+				DEBUG = True
+				SECERT_KEY = "123123"
+		
+		
+		2.初始化Flask实例时的配置
+			Flask(__name__)
+			1.static_url_path  = "/static_folder" 访问静态目录文件时的地址 默认值是等于static_folder的名字
+			2.static_folder = "static" 静态文件的存放路径
+			3.template_folder='templates' 模板路径
+		
+	4.Flask 中蓝图 插拔机制
+		bp = Blueprint("bluename",__name__)
+		@bp.route()
+		
+		template_folder="blueprint_temp",
+	    static_folder="blueprint_static",
+	    static_url_path="/static2"
+		
+		注册：
+		app.register_blueprint(blue.bp)
+	
+	5.before_request after_request errorheadler(404)
+		1.before_request 再请求进入视图函数之前作出处理 return None 
+		2.after_request 在请求结束视图函数之后，返回客户端之前 def go(response) return response 逆向执行
+		3.errorheadler(404) 在使用errorheadler传递参数 404 500 def error(code_or_exp) return redirect("/index")
+	
+	6.Flask 中的 flash
+		闪现
+		flash("message")
+		msg_list = get_flashed_messages()[0]
+		
+	7.from flask import send_file
+		return send_file(file_name)
+
+	8.from flask import jsonify # content-Type: app/x-www-form-data
+		return json.dumps({123:"34"}) 
+		return jsonify({123:"34"})) # content-Type: app/json
+	
+
+今日作业：
+	基于session before_request Blueprint 写一个学生管理 增删改 查：查询所有学生，查看单个学生的详细
+	扩展：pymysql
+	
+
+今日总结：
+	1.使用endpoint解决 视图函数重名的问题
+	2.flask中的路由
+		@app.route("/<int:age>",methods=("GET",),endpoint="默认视图函数名")
+		动态路由参数"/<age>"
+	
+	3.配置：
+		1.Flask实例配置
+			app.config.from_object(obj)
+			class obj():
+				DEBUG = True
+				
+		2.Flask初始化配置 和 蓝图接近
+			template_folder = "模板存放路径" # ；蓝图应用时，同一个文件夹
+			static_folder = "静态文件存放路径"
+			static_url_path = "/默认值是等于static_folder的名字" #蓝图应用时path不能重复
+			
+	4.蓝图（Blueprint）
+		bp = Blueprint("bluename",__name__) # 类Flask实例
+		@bp.route("/") 为蓝图添加路由 方式与Flask实例路由一毛一样
+		
+		注册蓝图
+			app.register_blueprint(bule.bp)
+	
+		插拔机制
+	
+	5.(before/after)_request errorheadler(404)
+		@app.before_request 请求进入视图函数之前作出处理
+		@app.after_request 请求结束视图函数之后，返回客户端之前，作出处理
+		def after(response)
+			return response
+			
+		be1-be2-af2-af1
+		be1-af2-af1
+		
+		errorheadler(404) #定义错误请求的响应
+		def err(code_or_exp)
+			
+	6.skip(闪现flash)
+	
+	7. send_file  jsonify
+		1.form flask import send_file
+		flask send_file 打开文件并返回
+		send_file(文件路径)
+		
+		2.from flask import jsonify
+		return jsonify({a:1})
+		打包一个 content-Type：application/json 返回给客户端
+		jsonify的配置在app["JSONIFY_MIMETYPE"] = ""
+	
+
+
+	
+
+
+		
