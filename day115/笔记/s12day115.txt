@@ -1,0 +1,181 @@
+2018年10月15日：
+Flask请求上下文：
+
+
+2018年10月15日：
+	1.websocket 与轮询
+		轮询：
+			不断向服务器发起询问，服务器还不断的回复
+			浪费带宽，浪费前后端资源
+			保证数据的实时性
+			
+		长轮询：
+			1.客户端向服务器发起消息，服务端轮询，放在另外一个地方，客户端去另外一个地方去拿
+			2.服务端轮询，放在另外一个地方，直接推给客户端
+			
+			释放客户端资源，服务压力不可避免，节省带宽资源
+			数据不能实时性
+			
+		websocket：是一个新的协议 Socket-io 
+			1.前后端hold住
+			2.建立长链接
+						
+			彻底解决实时性
+			解决占用带宽的问题
+			解决资源
+		
+		
+	2.webscoket使用 
+		from flask import Flask, request
+		from geventwebsocket.websocket import WebSocket
+		from gevent.pywsgi import WSGIServer
+		from geventwebsocket.handler import WebSocketHandler
+
+		app = Flask(__name__)
+
+
+		@app.route("/ws")  # WS://127.0.0.1:9527/ws
+		def ws():
+			# request.environ["wsgi.websocket"] = <链接>
+			user_socket = request.environ.get("wsgi.websocket")  # type:WebSocket
+			while 1:
+				msg = user_socket.receive()
+				print(msg)
+				user_socket.send(msg)
+
+
+		if __name__ == '__main__':
+			http_serv = WSGIServer(("0.0.0.0", 9527), app, handler_class=WebSocketHandler)
+			http_serv.serve_forever()
+			# app.run("0.0.0.0", 9527, debug=True)
+		
+	即时通讯(IM)：
+		群聊：
+			from flask import Flask, request,render_template
+			from geventwebsocket.websocket import WebSocket
+			from gevent.pywsgi import WSGIServer
+			from geventwebsocket.handler import WebSocketHandler
+			import json
+
+			app = Flask(__name__)
+
+			user_socket_dict = {} # {jinwangba:<geventwebsocket.websocket.WebSocket object at 0x000000000B35CE18>}
+
+			@app.route("/")
+			def index():
+				return render_template("index.html")
+
+			@app.route("/ws/<nickname>")  # WS://127.0.0.1:9527/ws
+			def ws(nickname):
+				user_socket = request.environ.get("wsgi.websocket") # type:WebSocket
+				if user_socket:
+					user_socket_dict[nickname]=user_socket
+					print(len(user_socket_dict))
+				else:
+					return render_template("index.html",message="请使用Websocket链接")
+				while 1:
+					msg = user_socket.receive()
+					for user_nick_name,socket in user_socket_dict.items(): # type:WebSocket
+						if user_socket != socket:
+							try:
+								socket.send(json.dumps({"sender":nickname,"msg":msg}))
+							except:
+								continue
+
+
+			if __name__ == '__main__':
+				http_serv = WSGIServer(("0.0.0.0",9527),app,handler_class=WebSocketHandler)
+				http_serv.serve_forever()
+				# app.run("0.0.0.0", 9527, debug=True)
+				
+		单聊：
+			from flask import Flask, request,render_template
+			from geventwebsocket.websocket import WebSocket
+			from gevent.pywsgi import WSGIServer
+			from geventwebsocket.handler import WebSocketHandler
+			import json
+
+			app = Flask(__name__)
+
+			user_socket_dict = {} # {jinwangba:<geventwebsocket.websocket.WebSocket object at 0x000000000B35CE18>}
+
+			@app.route("/")
+			def index():
+				return render_template("index.html")
+
+			@app.route("/ws/<nickname>")  # WS://127.0.0.1:9527/ws
+			def ws(nickname):
+				user_socket = request.environ.get("wsgi.websocket") # type:WebSocket
+				if user_socket:
+					user_socket_dict[nickname]=user_socket
+					print(len(user_socket_dict),user_socket_dict)
+				else:
+					return render_template("index.html",message="请使用Websocket链接")
+				while 1:
+					msg = user_socket.receive()
+					msg_dict = json.loads(msg)
+					#{"to_user":jinwangba,msg:"DSB"}
+					to_user = msg_dict.get("to_user")
+					print("to_user:",to_user)
+					to_user_socket = user_socket_dict.get(to_user)
+					send_str = json.dumps({"sender":nickname,"msg":msg_dict.get("msg")})
+					to_user_socket.send(send_str)
+
+
+			if __name__ == '__main__':
+				http_serv = WSGIServer(("0.0.0.0",9527),app,handler_class=WebSocketHandler)
+				http_serv.serve_forever()
+				# app.run("0.0.0.0", 9527, debug=True)
+
+
+		
+		
+	3.websocket 握手原理：
+		magic string为：258EAFA5-E914-47DA-95CA-C5AB0DC85B11
+		握手返回信息：Sec-WebSocket-Key + magic string
+	
+		import socket, base64, hashlib
+
+		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		sock.bind(('127.0.0.1', 9527))
+		sock.listen(5)
+		# 获取客户端socket对象
+		conn, address = sock.accept()
+		# 获取客户端的【握手】信息
+		data = conn.recv(1024)
+		print(data)
+
+
+		def get_headers(data):
+			header_dict = {}
+			header_str = data.decode("utf8")
+			for i in header_str.split("\r\n"):
+				if str(i).startswith("Sec-WebSocket-Key"):
+					header_dict["Sec-WebSocket-Key"] = i.split(":")[1].strip()
+
+			return header_dict
+
+		ws_key = get_headers(data).get("Sec-WebSocket-Key")
+
+		# # magic string为：258EAFA5-E914-47DA-95CA-C5AB0DC85B11
+		magic_string = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
+		socket_str = ws_key + magic_string
+		socket_str_sha1 = hashlib.sha1(socket_str.encode("utf8")).digest()
+		socket_str_base64 = base64.b64encode(socket_str_sha1)
+
+		response_tpl = "HTTP/1.1 101 Switching Protocols\r\n" \
+					   "Upgrade:websocket\r\n" \
+					   "Connection: Upgrade\r\n" \
+					   "Sec-WebSocket-Accept: %s\r\n" \
+					   "WebSocket-Location: ws://127.0.0.1:9527\r\n\r\n" %(socket_str_base64.decode("utf8"))
+
+		conn.send(response_tpl.encode("utf8"))
+		while 1:
+			msg = conn.recv(8096)
+			print(msg)
+
+	
+
+作业：
+	自己实现带昵称的 单群聊

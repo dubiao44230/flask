@@ -47,9 +47,28 @@ def fetch_all(sql, args):
     return result
 
 
-ret = fetch_all("select * from user", ())
+def fetch_one(sql, args):
+    conn, cursor = get_conn()
+    cursor.execute(sql, args)
+    result = cursor.fetchone()
+    reset_conn(conn, cursor)
 
+    return result
+
+
+def insert_one(sql, args):
+    conn, cursor = get_conn()
+    cursor.execute(sql, args)
+    conn.commit()
+    reset_conn(conn, cursor)
+
+ret = fetch_all("select * from user", ())   # [{'id': 1, 'name': 'alex'}, {'id': 2, 'name': 'eeee'}]
+
+ret2 = fetch_one("select name from user where id=%s", (1,))  # {'name': 'alex'}
+
+ret3 = insert_one("insert into user(id, name) values (%s, %s)",(4,"ffffff"))
 print(ret)
+print(ret2)
 
 
 

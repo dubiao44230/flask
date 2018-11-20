@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
-    <link rel="bookmark" type="image/x-icon" href="msg/favicon.ico"/>
-    <link rel="shortcut icon" href="msg/favicon.ico">
-    <script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.js"></script>
-    <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.js"></script>
+    <title>Title</title>
 </head>
 <body>
-$END$
+<form action="" method="post">
+    {% for field in fm %}
+    <p>{{ field.label }}:{{ field }}{{ field.errors.0 }}</p>
+
+    {% endfor %}
+    <p><input type="submit" value="提交"></p>
+
+</form>
 </body>
 </html>

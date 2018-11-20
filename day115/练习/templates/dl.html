@@ -2,13 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
-    <link rel="bookmark" type="image/x-icon" href="msg/favicon.ico"/>
-    <link rel="shortcut icon" href="msg/favicon.ico">
-    <script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.js"></script>
-    <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.js"></script>
+    <title>Title</title>
+
 </head>
 <body>
-$END$
+<h1>资源分享群</h1>
+<p>{{ message }}</p>
+<p>昵称：<input type="text" id="nickname">
+    <button onclick="createsocket()">链接群聊</button></p>
+<p>与：<input type="text" id="to_user">聊天</p>
+    消息：<input type="text" id="send_text">
+<button id="send" onclick="send_msg()">发送</button>
+<div style="border: 2px solid; width: 500px;height: 800px;" id="text_div"></div>
+<script>
+    var ws = null;
+    function createsocket() {
+        var nickname = document.getElementById("nickname").value;  // 用户本人昵称
+        ws = new WebSocket("ws://127.0.0.1:8008/ws/"+nickname);  // 建立Websocket链接
+        ws.onmessage = function (data) {
+            var text_div = document.getElementById("text_div");
+            var obj_data = JSON.parse(data.data);
+            var add_msg = "<p>" + obj_data.sender + ":" + obj_data.msg + "</p>" ;
+            text_div.innerHTML += add_msg;
+        }
+    }
+    function send_msg() {
+        var nickname = document.getElementById("nickname").value;
+        var to_user = document.getElementById("to_user").value;
+        var msg = document.getElementById("send_text").value;
+        var text_div = document.getElementById("text_div");
+        var add_msg = "<p style='text-align: right'>" + msg + ":" + nickname + "</p>";
+        text_div.innerHTML += add_msg;
+        var msg_obj = JSON.stringify({to_user:to_user, msg:msg});
+        ws.send(msg_obj)
+
+    }
+</script>
 </body>
 </html>

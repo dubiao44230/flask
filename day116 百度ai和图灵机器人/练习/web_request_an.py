@@ -38,7 +38,8 @@ def xueshuohua(file_name):
     ret_file_name = f"{uuid4()}.mp3"
     with open(ret_file_name, "wb") as f:
         f.write(res_audio)
-    os.system("audio.mp3")
+    return ret_file_name
+
 
 
 def my_nlp_lowb(text_def):

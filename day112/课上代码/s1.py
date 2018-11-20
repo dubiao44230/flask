@@ -1,4 +1,6 @@
 # 1.Flask 中的 CBV
+
+
 from flask import Flask, views, url_for, session, render_template, redirect, request
 from flask_session import Session
 from redis import Redis
@@ -80,7 +82,7 @@ class RegForm(Form):
     username = simple.StringField(
         label="用户名",
         validators=[
-            # validators.DataRequired(message="数据不能为空"),
+            validators.DataRequired(message="数据不能为空"),
             validators.Length(min=5, max=16, message="大于5小于16")
         ],
         render_kw={"class": "jinyinwangba"}
@@ -89,7 +91,7 @@ class RegForm(Form):
     password = simple.PasswordField(
         label="密码",
         validators=[
-            # validators.DataRequired(message="数据不能为空"),
+            validators.DataRequired(message="数据不能为空"),
             validators.Length(min=5, max=16, message="大于5小于16"),
             validators.Regexp(regex="\d+", message="密码必须为数字")
         ],
@@ -98,7 +100,7 @@ class RegForm(Form):
     repassword = simple.PasswordField(
         label="密码",
         validators=[
-            # validators.DataRequired(message="数据不能为空"),
+            validators.DataRequired(message="数据不能为空"),
             validators.EqualTo("password", message="两次密码不一致")
         ],
     )

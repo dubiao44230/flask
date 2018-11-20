@@ -18,7 +18,7 @@ def to_tuling(request_text, user_id):
         }
     }
     ret = requests.post(tuling_url, json=msg)
-    ret_msg = json.dumps(ret.content)  # 这里注意 ret.content才能拿到返回的信息
+    ret_msg = json.loads(ret.content)  # 这里注意 ret.content才能拿到返回的信息
     # ss = ret.json()   这种方法也可以反序列化
     return ret_msg.get("results")[0]["values"]["text"]
 

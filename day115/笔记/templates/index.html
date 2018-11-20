@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>欢迎使用S12群聊</h1>
+<p>{{ message }}</p>
+<p>昵称：<input type="text" id="nickname">
+    <button onclick="createsocket()">链接群聊</button>
+</p>
+<p>与：<input type="text" id="to_user">轻声细语</p>
+消息：<input type="text" id="send_text">
+<button id="send" onclick="send_msg()">发送</button>
+<div style="border: 2px solid; width: 500px;height: 800px;" id="text_div">
+
+</div>
+
+</body>
+<script type="text/javascript">
+    var ws = null;
+
+    function createsocket() {
+        var nickname = document.getElementById("nickname").value;
+        // ws = new WebSocket("ws://192.168.12.11:9527/ws/" + nickname);
+        ws = new WebSocket("ws://127.0.0.1:9527/ws/"+ nickname);
+        ws.onmessage = function (data) {
+            var text_div = document.getElementById("text_div");
+            var obj_data = JSON.parse(data.data);
+            var add_msg = "<p>" + obj_data.sender + ":" + obj_data.msg + "</p>";
+            text_div.innerHTML += add_msg;
+        }
+    }
+
+
+    function send_msg() {
+        var nickname = document.getElementById("nickname").value;
+        var to_user = document.getElementById("to_user").value;
+        var msg = document.getElementById("send_text").value;
+        var text_div = document.getElementById("text_div");
+        var add_msg = "<p style='text-align: right'>" + msg + ":" + nickname + "</p>";
+        text_div.innerHTML += add_msg;
+        var msg_obj = JSON.stringify({to_user:to_user,msg:msg});
+        ws.send(msg_obj);
+    }
+
+
+</script>
+</html>

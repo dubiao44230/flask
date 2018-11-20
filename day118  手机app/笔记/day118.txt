@@ -1,0 +1,99 @@
+2018年10月18日：
+上节回顾：
+	MongoDB：
+		使用不存在的对象即创建该对象
+		use database
+		db.Collections.insert({}) 写入磁盘
+		#__solts__ = ["usename","pwd"]
+		
+	
+	ObjectId("时间戳+机器码+线程进程ID+计数器")，不能够被JSON
+	
+	
+	增删改查：
+		MongoDB			pymongo
+				
+		insert			insert
+		insertOne 		insert_one
+		insertMany		insert_many
+		
+		remove({})		remove({})
+		deleteOne({}) 	delete_one({})
+		deleteMany({})	delete_many({})
+		
+		update({},{$set:{}})		update({},{$set:{}})
+		updateOne({},{$set:{}})		update_one({},{$set:{}})
+		updateMany({},{$set:{}})	update_many({},{$set:{}})
+		
+		find({})		find({条件,条件}) (相当于and)
+		findOne({})		find_one({$or:[{name:jin},{age:{$lt:50}}]})
+	
+	$:
+		存储满足条件列表元素的下标索引 update_one({hobby_list:"蹦养生迪"},{$set:{hobby_list.$:"养生"}})
+	
+	$关键字：
+		$lt $gt $lte $gte $eq :
+		$all 满足所有条件 findOne({hobby_list:{$all:[3,2,4,1]}})  # hobby_list = [1,2,3,4,5,6]
+		$or 满足其中一个字段 find_one({$or:[{name:jin},{age:{$lt:50}}]})
+		$in	满足其中一部分条件 findOne({hobby_list:{$in:[1,2,3,7,8,9]}})
+		
+	$修改器
+		$set 将key赋value
+		$inc  将原value加新value
+		$unset 删除字段
+		
+		Arrays
+		$push 在列表中追加一个元素 append()
+		$pull 在列表中删除一个元素 remove()
+		$pop  删除第一个或最后一个元素 pop
+	
+	
+
+2018年10月18日：
+今日内容：
+	Mui:
+		前端布局框架
+		封装了HTML5PLUS
+	
+	HTML5PLUS:
+		移动操作系统的调用接口
+		
+		
+今日总结：
+	mui 代码块 用于快速构建mui组件
+	mui.openWindow({
+		url:"index.html",
+		id:"index.html",
+		styles:{
+			页面布局
+		},
+		extras:{
+			页面参数
+		}
+	})
+
+	plusReady(function(){
+		plus.webview.currentWebView()
+	}) 获取当前页面参数
+	
+	mui.fire:
+		web = plus.webview.getWebViewById("index.html") # HBuilder
+		mui.fire(web,"sayHello",{talk:"你好"})
+		
+		document.addEventListener("sayHello",function(data){
+			data.detail {talk:"你好"}
+			data.detail.talk
+		})
+		
+	mui.post(
+		"url",
+		{id:1},
+		function(data){
+			
+		}
+	) 
+	发起post请求
+	
+		
+		
+		
